@@ -1,0 +1,28 @@
+services:
+  evolution-db:
+    image: postgres:15-alpine
+    container_name: evolution_db
+    restart: always
+    environment:
+      POSTGRES_USER: evolution
+      POSTGRES_PASSWORD: evolution_password
+      POSTGRES_DB: evolution_api
+    volumes:
+      - evolution_db_data:/var/lib/postgresql/data
+
+  evolution-api:
+    image: evoapicloud/evolution-api:v2.1.1
+    container_name: evolution_api
+    restart: always
+    ports:
+      - "8081:8080"
+    depends_on:
+      - evolution-db
+    env_file:
+      - .env
+    volumes:
+      - evolution_instances:/evolution/instances
+
+volumes:
+  evolution_instances:
+  evolution_db_data:
